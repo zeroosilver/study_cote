@@ -1,0 +1,65 @@
+//베스트앨범
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <iostream>
+
+using namespace std;
+
+//재생횟수 내림차순 정렬, 횟수 같을 경우 고유번호가 낮은 노래 먼저 수록
+bool cmp(const pair<int, int> &a, const pair<int, int> &b)
+{
+    if(a.first == b.first) return a.second < b.second;
+    return a.first > b.first;
+}
+
+vector<int> solution(vector<string> genres, vector<int> plays) {
+    vector<int> answer; 
+    //<장르별 누적 재생수, 장르, 내림차순 정렬>
+    map<int, string, greater<int>> count;
+    
+    //장르별 합계 => 재생횟수, 고유번호 비교 => answer에 push
+    //<장르, 누적>, 장르로 검색하기 위해서, 합계를 위한 map
+    map<string, int> temp;
+    for(int i=0; i<genres.size(); i++)
+    {
+        auto itr = temp.find(genres[i]);
+        //해당 장르가 처음이라면 새로 등록
+        if(itr == temp.end()) temp.insert({genres[i], plays[i]});
+        //재생횟수 더하기
+        else itr->second += plays[i];
+    }
+    //count에 구한 장르별 재생횟수 전달
+    for(auto x : temp) count.insert({x.second, x.first});
+    
+    //가장 많이 재생된 장르부터 작업 진행
+    for(auto x : count) 
+    {
+        //<재생횟수, 고유 번호, 내림차순 정렬>
+        vector<pair<int, int>> songs; 
+        
+        //전체 노래 돌면서 현재 장르 노래만 songs에 저장
+        for(int i=0; i<plays.size(); i++)
+        {
+            if(genres[i] == x.second)
+            {
+                songs.push_back(make_pair(plays[i], i));
+            }else continue;
+        }
+        
+        sort(songs.begin(), songs.end(), cmp);
+        
+        //2곡 선정을 위한 j
+        int j = 0;
+        for(int i=0; i<songs.size(); i++)
+        {
+            if(j>=2) break;
+            answer.push_back(songs[i].second);
+            j++;
+        }
+    }
+    
+    
+    return answer;
+}
