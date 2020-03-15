@@ -1,0 +1,49 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+int solution(vector<vector<int>> baseball) {
+    int answer = 0;
+    
+    //주어진 baseball 결과랑 i의 결과가 같은지 검사
+    for(int i=123; i<=987; i++)
+    {
+        string temp = to_string(i);
+        
+        //0이 들어가거나 숫자 중복 제거, 0은 반드시 '0'으로 처리!
+        if(temp[0] == '0' || temp[1] == '0' || temp[2] == '0') continue;
+        if(temp[0] == temp[1] || temp[1] == temp[2] || temp[2] == temp[0]) continue;
+        
+        
+        for(int j=0; j<baseball.size(); j++)
+        {
+            string cnd = ""; int ball = 0; int strike = 0;
+            cnd = to_string(baseball[j][0]); 
+            
+            for(int n=0; n<3; n++)
+            {
+                if(cnd[n] == temp[n])
+                {
+                    strike++;
+                    continue;
+                }
+                for(auto x : temp)
+                {
+                    if(cnd[n] == x)
+                    {
+                        ball++;
+                        continue;
+                    }
+                }
+            }
+            if(strike != baseball[j][1] || ball != baseball[j][2]) break;
+            if(j == baseball.size()-1) answer++;
+        }
+    }
+    
+    
+    
+    return answer;
+}
