@@ -1,0 +1,39 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+
+int solution(vector<int> priorities, int location) {
+    int answer = 0; bool end = false;
+    vector<pair<int, bool>> v;
+    
+    for(int i=0; i<priorities.size(); i++){
+        if(i == location){
+            v.push_back(make_pair(priorities[i], true));
+        }else {
+            v.push_back(make_pair(priorities[i], false));
+        }
+    }
+    
+    while(!end){
+        bool print_J = true; auto j = v.begin();
+        
+        //인쇄전 우선순위 확인
+        for(auto x : v){
+            if(j->first < x.first){
+                v.push_back({j->first, j->second});
+                v.erase(v.begin());
+                print_J = false;
+                break;
+            }
+        }
+        //J인쇄
+        if(print_J){
+            answer++;
+            if(j->second) return answer++;
+            v.erase(v.begin());
+        }
+    }
+}
