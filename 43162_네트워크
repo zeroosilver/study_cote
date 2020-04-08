@@ -1,0 +1,31 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+void dfs(bool visited[], vector<vector<int>> &computers, int start, int n){
+    if(visited[start])return;
+    visited[start] = true;
+    
+    //c연결 컴퓨터 조회
+    for(int i=0; i<n; i++){
+        if(start == i) continue;
+        if(computers[start][i] == true) dfs(visited, computers, i, n);
+    }
+}
+
+int solution(int n, vector<vector<int>> computers) {
+    bool visited[200];
+    int answer = 0;
+    fill_n(visited, 200, false);
+        
+    for(int i=0; i<n; i++){
+        if(visited[i]) continue;
+        else if(!visited[i]){
+            dfs(visited, computers, i, n);
+            answer++;
+        }
+    }
+    return answer;
+}
