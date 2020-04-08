@@ -1,0 +1,39 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(string name) {
+    int answer = 0;
+    int p = 0; //기준점
+    string aaa;
+    
+    for (int i = 0; i < name.size(); i++) aaa += "A";
+    
+    while(aaa != name){
+        int target = 0; int left = 0; int right = 0;
+        
+        for(int i =0; i < name.length(); i++){
+            //왼쪽오른쪽 포인터 설정, 범위 넘으면 첫자리로
+            if(p + i < name.length()) right = p + i;
+            else right = p + i - name.length();
+            if(p - i >= 0) left = p - i;
+            else left = p - i + name.length();
+            
+            //수정할 타겟 설정, 왼오 둘 다 A면 continue;
+            if(aaa[right] != name[right]) target = right;
+            else if(aaa[left] != name[left]) target = left;
+            else continue;
+            
+            answer += min(name[target] - 'A', 'Z' - name[target] + 1);
+            aaa[target] = name[target];
+            
+            //이동 만큼 ++
+            answer += i;
+            break;  
+        }
+        p = target;
+    }
+    
+    return answer;
+}
