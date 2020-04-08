@@ -1,0 +1,39 @@
+#include <string>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <set>
+
+using namespace std;
+
+bool check(int number){
+    if(number == 0) return false;
+    if(number == 1) return false;
+    if(number == 2) return true; //븅아... 2는... 소수야...소수...
+    if (number % 2 == 0) return false; 
+    
+    int temp = sqrt(number);
+    for(int i=2; i<= temp; i++){
+        if(number % i == 0) return false;
+    }
+    return true;
+}
+
+int solution(string numbers) {
+    int answer = 0; int number = 0; string temp = numbers; 
+    set<int> s; sort(temp.begin(), temp.end());
+    int size = temp.size();
+    
+    do{
+        for(int i=1; i<= size; i++){
+            number = stoi(temp.substr(0,i));
+            if(check(number)){
+                s.insert(number);
+            }
+        }
+    }while(next_permutation(temp.begin(), temp.end()));
+    
+    answer = s.size();
+    
+    return answer;
+}
