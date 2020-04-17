@@ -1,0 +1,58 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+void dp(int NN[], int number, int &answer, int now, int count)
+{
+    if(count > answer || count > 8) { return; }
+    
+    if(now == number)
+    {
+        if(answer > count)
+        {
+            answer = count;
+            return;
+        }
+    }
+    
+    //N+N, N-N, N*N, N/N
+    for(int i=0; i<8; i++)
+    {
+        dp(NN, number, answer, now+NN[i], count+1+i);
+        dp(NN, number, answer, now-NN[i], count+1+i);
+        dp(NN, number, answer, now*NN[i], count+1+i);
+        
+        if(NN[i] > 0) 
+        { 
+            dp(NN, number, answer, now/NN[i], count+1+i); 
+        }
+        
+        if(now > 0) 
+        { 
+            dp(NN, number, answer, NN[i]/now, count+1+i);
+            dp(NN, number, answer, NN[i]-now, count+1+i);
+        }
+    }
+} 
+
+int solution(int N, int number) 
+{
+    int answer = 9;
+    int NN[8];
+    
+    string temp = "";
+    
+    for(int i=0; i<8; i++)
+    {
+        temp += to_string(N);
+        NN[i] = stoi(temp);
+    }
+    
+    for(int i=0; i<8; i++) { dp(NN, number, answer, NN[i], 1+i); }
+        
+    if(answer > 8) { return -1; }
+    
+    return answer;
+}
