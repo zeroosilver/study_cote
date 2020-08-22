@@ -1,40 +1,59 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
-
-int solution(vector<int> priorities, int location) {
-    int answer = 0; bool end = false;
-    vector<pair<int, bool>> v;
-    
-    for(int i=0; i<priorities.size(); i++){
-        if(i == location){
-            v.push_back(make_pair(priorities[i], true));
-        }else {
-            v.push_back(make_pair(priorities[i], false));
-        }
-    }
-    
-    while(!end){
-        bool print_J = true; auto j = v.begin();
-        
-        //인쇄전 우선순위 확인
-        for(auto x : v){
-            if(j->first < x.first){
-                v.push_back({j->first, j->second});
-                v.erase(v.begin());
-                print_J = false;
-                break;
-            }
-        }
-        //J인쇄
-        if(print_J){
-            answer++;
-            if(j->second) return answer++;
-            v.erase(v.begin());
-        }
-    }
+bool compare(int i, int j){
+    return i > j;
 }
 
+int solution(vector<int> priorities, int location) {
+    int answer = 0; 
+    
+    //우선순위 체크를 위해 대기목록 복사 후 정렬
+    vector<int> set;
+    for(auto p : priorities) set.push_back(p);
+    sort(set.begin(), set.end(), compare);
+    // for(auto s : set) cout<<s<<endl;
+
+    while(!priorities.empty()){
+        // cout<<"location: "<<location<<" job: "<<priorities[0]<<" max: "<<set[0]<<endl;
+        
+        //내가 요청한 문서가 이전 턴에서 인쇄완료 됨
+        if(location < 0) break;
+        
+        //인쇄성공
+        if(priorities[0] >= set[0]){
+            //현재 문서가 중요도 가장 클 때
+            if(priorities[0] == set[0]){
+                set.erase(set.begin());
+            } 
+            
+            priorities.erase(priorities.begin());
+            answer++;
+            location--;
+            
+            cout<<"인쇄성공"<<endl;
+        }
+        
+        //인쇄실패
+        if(priorities[0] < set[0]){
+            //문서 뒤로 보내기
+            int temp = priorities[0];
+            priorities.erase(priorities.begin());
+            priorities.push_back(temp);
+            
+            //뒤로 보내진 문서가 내 문서일 때
+            if(location == 0) location += priorities.size();
+            location--;
+            
+            cout<<"인쇄실패"<<endl;
+        }
+    }
+    
+    
+    
+    return answer;
+}
